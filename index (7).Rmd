@@ -1,0 +1,147 @@
+---
+title: "AFDMD-111 Estadística"
+subtitle: "Lectura de archivos en R"
+author: "Gael D.Gonzalez Pizaña"
+date: "20/09/2023"
+output:
+  rmdformats::material:
+    highlight: kate
+    cards: false
+---
+
+
+```{r knitr_init, echo=FALSE, message=TRUE, cache=FALSE, warnings=F}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+# Lectura de archivos en R
+
+`R` puede leer una gran cantidad de archivos incluyendo archivos `.txt`, `.csv`, `.xls`, `.pdf`, etc. Mediante el uso del paquete `tabulizer` se pueden leer tablas que se encuentran en documentos `PDF`. En la siguiente actividad se instalará y cargará el paquete `tabulizer` mediante los comandos:
+
+```{r eval=FALSE}
+install.packages("tabulizer", dependencies = TRUE)   # Instala tabulizer
+library(tabulizer)                                   # Carga tabulizer
+
+```
+
+Posteriormente se leerá la tabla localizada en el archivo `seccion_calificacionesmsosa247.pdf` que se encuentra en la sección de **archivos** del *Teams* (lo anterior se puede hacer mediante el comando `extract_tables` del tabulizer). Una vez cargada la tabla que se llamará `tablaAlumnos` se realizarán las siguientes actividades:
+
+1.- Graficar `No` contra `Parcial 1`.
+
+```{r}
+library(tabulizer)
+tap<-extract_tables("seccion_calificacionesmsosa247.pdf", output = "data.frame")
+tap<- tap[[1]]
+names(tap)
+names(tap)<-c("No","Matricula","Nombre", "parcial1","parcial2","parcial3", "promedio")
+head(tap)
+names(tap)
+tap$parcial1
+plot(tap$No,tap$parcial1,type = "l")
+```
+
+2.- Graficar `No` contra `Parcial 2`.
+```{r}
+library(tabulizer)
+tap<-extract_tables("seccion_calificacionesmsosa247.pdf", output = "data.frame")
+tap<- tap[[1]]
+names(tap)
+names(tap)<-c("No","Matricula","Nombre", "parcial1","parcial2","parcial3", "promedio")
+head(tap)
+names(tap)
+tap$parcial1
+plot(tap$No,tap$parcial2,type = "l")
+```
+
+
+3.- Renombrar `Ev.` a `Parcial 3` (mostrar el `data.frame` resultante).
+```{r}
+library(tabulizer)
+tap<-extract_tables("seccion_calificacionesmsosa247.pdf", output = "data.frame")
+tap<- tap[[1]]
+names(tap)
+names(tap)<-c("No","Matricula","Nombre", "parcial1","parcial2","parcial3", "promedio")
+head(tap)
+names(tap)
+tap$parcial3
+```
+
+
+4.- Graficar `No` contra `Parcial 1`, `Parcial 2`.
+```{r}
+library(tabulizer)
+tap<-extract_tables("seccion_calificacionesmsosa247.pdf", output = "data.frame")
+tap<- tap[[1]]
+names(tap)
+names(tap)<-c("No","Matricula","Nombre", "parcial1","parcial2","parcial3", "promedio")
+head(tap)
+names(tap)
+str(tap$parcial1)
+str(tap$parcial2)
+plot(tap$No,tap$parcial1,type = "l",col = "blue", xlab = "No", ylab = "parcial1")
+points(tap$No,tap$parcial2, col = "red", pch = 19)
+```
+
+
+5.- ¿Cuál es la media de las calificaciones finales? ¿Quién obtuvo la calificación más baja? ¿Quién obtuvo el mejor promedio? (anexar el código que lo calcula).
+```{r}
+library(tabulizer)
+tap<-extract_tables("seccion_calificacionesmsosa247.pdf", output = "data.frame")
+tap<- tap[[1]]
+names(tap)
+head(tap)
+names(tap)<-c("No","Matricula","Nombre", "parcial1","parcial2","parcial3", "promedio")
+promedio_general <- mean(tap$promedio)
+cat("Media de las calificaciones finales:", promedio_general, "\n")
+estudiante_calificacion_mas_baja <- tap[which.min(tap$promedio), ]
+cat(" calificación más baja:\n")
+cat("=====================================\n")
+print(estudiante_calificacion_mas_baja)
+cat("\n")
+
+estudiante_mejor_promedio <- tap[which.max(tap$promedio), ]
+cat(" mejor promedio:\n")
+cat("====================================\n")
+print(estudiante_mejor_promedio)
+```
+
+
+6.- Cree una nueva columna llamada `promedio` (esto lo puede hacer con `mutate` del paquete `dplyr`) y compárela con la columna `Calif.` (¿Qué se puede observar?).
+```{r}
+library(tabulizer)
+tap<-extract_tables("seccion_calificacionesmsosa247.pdf", output = "data.frame")
+tap<- tap[[1]]
+names(tap)
+head(tap)
+names(tap)<-c("No","Matricula","Nombre", "parcial1","parcial2","parcial3", "promedio")
+promedio_general <- mean(tap$promedio)
+cat("Media de las calificaciones finales:", promedio_general, "\n")
+estudiante_calificacion_mas_baja <- tap[which.min(tap$promedio), ]
+cat(" calificación más baja:\n")
+cat("=====================================\n")
+print(estudiante_calificacion_mas_baja)
+cat("\n")
+
+estudiante_mejor_promedio <- tap[which.max(tap$promedio), ]
+cat(" mejor promedio:\n")
+cat("====================================\n")
+print(estudiante_mejor_promedio)
+```
+
+
+
+Posteriormente lea el archivo `it0103_2016_01.csv` (lo puede hacer mediante el comando `read.csv()`) el cual es una versión `sucia` del archivo anterior y replique cada uno de los puntos de arriba (sí es necesario modifique el data.frame resultante).
+
+
